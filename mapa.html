@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mapa Satelital Luxemburgo con Sensores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([49.67, 6.44], 11);
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles © Esri'
+    }).addTo(map);
+
+    var markers = {};
+
+    function cargarSensores() {
+      fetch('https://patricxias.github.io/sensores-luxemburgo/sensores.json')
+        .then(response => response.json())
+        .then(data => {
+          // Quitar marcadores viejos
+          for (var id in markers) {
+            map.removeLayer(markers[id]);
+          }
+          markers = {};
+
+          // Añadir nuevos marcadores
+          data.forEach(sensor => {
+            var marker = L.marker([sensor.lat, sensor.lng])
+              .addTo(map)
+              .bindPopup(`<b>${sensor.nombre}</b><br>Valor: ${sensor.valor}`);
+            markers[sensor.id] = marker;
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar sensores:', error);
+        });
+    }
+
+    // Cargar sensores por primera vez
+    cargarSensores();
+
+    // Actualizar sensores cada 10 minutos (600000 ms)
+    setInterval(cargarSensores, 600000);
+  </script>
+</body>
+</html>
