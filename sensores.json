@@ -1,0 +1,5 @@
+[
+  {"id": 1, "nombre": "Echternach", "lat": 49.807, "lng": 6.438, "valor": 10},
+  {"id": 2, "nombre": "Grevenmacher", "lat": 49.669, "lng": 6.450, "valor": 20},
+  {"id": 3, "nombre": "Remich", "lat": 49.538, "lng": 6.385, "valor": 30}
+]
